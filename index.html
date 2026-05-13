@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acetaminophen Nomogram Plotter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a1d;
+            --primary-card-color: #2c2c31;
+            --secondary-card-color: #46464f;
+            --border-color: #5a5a66;
+            --text-primary: #f0f0f0;
+            --text-secondary: #c7c7c7;
+            --accent-blue: #3498db;
+            --accent-blue-dark: #2980b9;
+            --accent-red: #e74c3c;
+            --line1-color: #2ecc71; /* Green */
+            --line2-color: #f1c40f; /* Yellow */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--primary-card-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 950px;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        /* New Instructions Styling */
+        .instructions {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            width: 90%;
+        }
+
+        .instructions strong {
+            color: var(--text-primary);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            width: 100%;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .input-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--secondary-card-color);
+            color: var(--text-primary);
+            width: 150px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            background-color: var(--accent-blue);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.2s;
+            height: 44px;
+        }
+
+        button:hover {
+            background-color: var(--accent-blue-dark);
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        canvas {
+            border: 1px solid var(--border-color);
+            background-color: var(--primary-card-color);
+            border-radius: 8px;
+        }
+
+        #legend {
+            background-color: var(--primary-card-color);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 10px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        #results, #disclosure {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 8px;
+            width: 95%;
+            text-align: left;
+        }
+
+        #results {
+            background-color: var(--secondary-card-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+            min-height: 2.5em;
+            line-height: 1.6;
+        }
+        
+        #results p {
+            margin: 0 0 1em 0;
+        }
+        
+        #results p:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-status {
+            color: var(--accent-red);
+            font-weight: 700;
+        }
+
+        #disclosure {
+            text-align: center;
+            background-color: rgba(230, 126, 34, 0.1);
+            border: 1px solid rgba(230, 126, 34, 0.3);
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Rumack-Matthew Nomogram Plotter</h1>
+        
+        <!-- Instruction Section -->
+        <div class="instructions">
+            <strong>How to use:</strong> Enter the exact time that has elapsed since the <strong>acute ingestion</strong>. 
+            The nomogram is only valid for blood samples taken between <strong>4 and 24 hours</strong> post-ingestion. 
+            Use the "Hours" and "Minutes" fields together to specify the time of the lab draw (e.g., for a draw at 4.5 hours, enter 4 in Hours and 30 in Minutes).
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <label for="hours">Time Since Ingestion (Hours)</label>
+                <input type="number" id="hours" min="0" max="24" placeholder="e.g., 8">
+            </div>
+            <div class="input-group">
+                <label for="minutes">Minutes</label>
+                <input type="number" id="minutes" min="0" max="59" placeholder="e.g., 30">
+            </div>
+            <div class="input-group">
+                <label for="level">Acetaminophen Level (µg/mL)</label>
+                <input type="number" id="level" min="1" placeholder="e.g., 160">
+            </div>
+            <button onclick="plotNomogram()">Plot Level</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="nomogramCanvas" width="700" height="550"></canvas>
+            <div id="legend">
+                 <div class="legend-item">
+                    <span class="legend-color" style="background-color: var(--line1-color);"></span>
+                    <span>150 µg/mL Line</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: var(--line2-color);"></span>
+                    <span>300 µg/mL Line</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="results">Enter data above and click "Plot Level" to see the result.</div>
+
+        <div id="disclosure">
+            <strong>Disclaimer:</strong> This application is for educational purposes only and does not replace bedside clinical assessment or medical toxicology evaluation. The Rumack-Matthew nomogram is a tool to be used by qualified medical professionals for risk assessment after a single, acute ingestion of acetaminophen.
+        </div>
+    </div>
+
+    <script>
+        const LINES = [
+            { value: 150, color: getComputedStyle(document.documentElement).getPropertyValue('--line1-color'), name: '150 µg/mL'},
+            { value: 300, color: getComputedStyle(document.documentElement).getPropertyValue('--line2-color'), name: '300 µg/mL'}
+        ];
+        const DECAY_CONSTANT = 0.1732868;
+
+        function getLineLevelAtTime(startLevel, time) {
+            if (time < 4) return startLevel;
+            return startLevel * Math.exp(-DECAY_CONSTANT * (time - 4));
+        }
+
+        function plotNomogram() {
+            const canvas = document.getElementById('nomogramCanvas');
+            const ctx = canvas.getContext('2d');
+            const resultsDiv = document.getElementById('results');
+            
+            const tickFont = "13px Inter";
+            const axisLabelFont = "bold 14px Inter";
+            const axisLabelColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary');
+            const tickColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
+            const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-card-color');
+            const axisColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color');
+
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const userLevel = parseFloat(document.getElementById('level').value);
+            const userTime = hours + minutes / 60;
+
+            const hasInput = (hours > 0 || minutes > 0 || userLevel > 0);
+
+            const padding = { top: 40, right: 40, bottom: 60, left: 80 };
+            const width = canvas.width;
+            const height = canvas.height;
+            const plotWidth = width - padding.left - padding.right;
+            const plotHeight = height - padding.top - padding.bottom;
+
+            const timeMax = 28;
+            const levelMin = 1, levelMax = 1000;
+            const logMin = Math.log(levelMin);
+            const logMax = Math.log(levelMax);
+
+            function getX(time) {
+                return padding.left + (time / timeMax) * plotWidth;
+            }
+
+            function getY(level) {
+                if (level <= 0) level = levelMin;
+                const logY = Math.log(level);
+                return height - padding.bottom - ((logY - logMin) / (logMax - logMin)) * plotHeight;
+            }
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-card-color');
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.beginPath();
+            ctx.moveTo(padding.left, padding.top);
+            ctx.lineTo(padding.left, height - padding.bottom);
+            ctx.strokeStyle = axisColor;
+            ctx.stroke();
+
+            // Updated yTicks to include 300
+            const yTicks = [1, 2, 5, 10, 20, 50, 100, 150, 200, 300, 500, 1000];
+            yTicks.forEach(tick => {
+                const yPos = getY(tick);
+                ctx.font = tickFont;
+                ctx.fillStyle = tickColor;
+                ctx.textAlign = 'right';
+                ctx.fillText(tick, padding.left - 15, yPos + 4);
+                
+                ctx.beginPath();
+                ctx.moveTo(padding.left - 5, yPos);
+                ctx.lineTo(width - padding.right, yPos);
+                ctx.strokeStyle = (tick === 150 || tick === 300) ? 'rgba(255,255,255,0.1)' : gridColor;
+                ctx.stroke();
+            });
+
+            ctx.beginPath();
+            ctx.moveTo(padding.left, height - padding.bottom);
+            ctx.lineTo(width - padding.right, height - padding.bottom);
+            ctx.strokeStyle = axisColor;
+            ctx.stroke();
+            
+            for (let t = 4; t <= 24; t += 4) {
+                const xPos = getX(t);
+                ctx.font = tickFont;
+                ctx.fillStyle = tickColor;
+                ctx.textAlign = 'center';
+                ctx.fillText(t, xPos, height - padding.bottom + 25);
+                
+                ctx.beginPath();
+                ctx.moveTo(xPos, height - padding.bottom + 5);
+                ctx.lineTo(xPos, padding.top);
+                ctx.strokeStyle = gridColor;
+                ctx.stroke();
+            }
+
+            ctx.save();
+            ctx.translate(padding.left - 60, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = 'center';
+            ctx.font = axisLabelFont;
+            ctx.fillStyle = axisLabelColor;
+            ctx.fillText('Acetaminophen Blood Concentration (µg/mL)', 0, 0);
+            ctx.restore();
+
+            ctx.textAlign = 'center';
+            ctx.font = axisLabelFont;
+            ctx.fillStyle = axisLabelColor;
+            ctx.fillText('Time Since Ingestion (hours)', padding.left + plotWidth / 2, height - padding.bottom + 50);
+
+            LINES.forEach(line => {
+                ctx.beginPath();
+                ctx.strokeStyle = line.color;
+                ctx.lineWidth = 2.5;
+                ctx.moveTo(getX(4), getY(line.value));
+                for (let t = 4.1; t <= 24; t += 0.1) {
+                    ctx.lineTo(getX(t), getY(getLineLevelAtTime(line.value, t)));
+                }
+                ctx.stroke();
+            });
+            ctx.lineWidth = 1;
+            
+            if (!hasInput) {
+                resultsDiv.style.textAlign = "center";
+                resultsDiv.innerHTML = '<p>Enter data above and click "Plot Level" to see the result.</p>';
+                return;
+            }
+             if (userTime < 4 || userTime > 24 || !userLevel) {
+                resultsDiv.style.textAlign = "center";
+                resultsDiv.innerHTML = '<p>Please enter a valid time (between 4 and 24 hours) and a valid level.</p>';
+                return;
+            }
+
+            const userX = getX(userTime);
+            const userY = getY(userLevel);
+
+            ctx.beginPath();
+            ctx.arc(userX, userY, 4, 0, 2 * Math.PI);
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-red');
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            const textForAbove150 = 'For acute acetaminophen ingestions, being above the 150 µg/mL line at 4 hours on the Rumack-Matthew Nomogram, if untreated, carries a significant risk of hepatotoxicity. This risk is drastically reduced with timely N-acetylcysteine (NAC) administration. Please consult your local Poison Control Center.';
+            const textForAbove300 = 'Being at or above the 300 µg/mL line signifies a higher risk of hepatotoxicity and acute liver failure, even with NAC administration. Please consult your local Poison Control Center immediately.';
+
+            const levelAt150Line = getLineLevelAtTime(150, userTime);
+            const levelAt300Line = getLineLevelAtTime(300, userTime);
+            
+            let resultStatusText = "";
+            let additionalInfo = "";
+
+            if (userLevel < levelAt150Line) {
+                resultStatusText = "below the 150 line";
+            } else if (userLevel >= levelAt150Line && userLevel < levelAt300Line) {
+                resultStatusText = "above the 150 line but below the 300 line";
+                additionalInfo = textForAbove150;
+            } else {
+                resultStatusText = "above the 300 line";
+                additionalInfo = textForAbove300;
+            }
+            
+            const styledResultStatus = `<span class="result-status">${resultStatusText}.</span>`;
+            let finalOutput = `<p>An acetaminophen level of ${userLevel} µg/mL at ${hours}h ${minutes}m is ${styledResultStatus}</p>`;
+
+            if (additionalInfo) {
+                finalOutput += `<p>${additionalInfo}</p>`;
+            }
+            
+            resultsDiv.style.textAlign = "left"; 
+            resultsDiv.innerHTML = finalOutput;
+        }
+
+        window.onload = plotNomogram;
+    </script>
+</body>
+</html>
