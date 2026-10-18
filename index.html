@@ -17,6 +17,7 @@
             --text-secondary: #c7c7c7;
             --accent-blue: #3498db;
             --accent-blue-dark: #2980b9;
+            --accent-blue-light: #74b9ff;
             --accent-red: #e74c3c;
             --line1-color: #2ecc71; /* Green */
             --line2-color: #f1c40f; /* Yellow */
@@ -67,6 +68,167 @@
 
         .instructions strong {
             color: var(--text-primary);
+        }
+
+        .instructions p {
+            margin: 0 0 8px 0;
+        }
+
+        .instructions .instructions-intro {
+            margin-bottom: 16px;
+        }
+
+        .instructions h2 {
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 6px 0;
+        }
+
+        .instructions-source {
+            font-weight: 400;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .instructions ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .instructions a {
+            color: var(--accent-blue-light);
+            text-decoration: underline;
+        }
+
+        .instructions a:hover {
+            color: var(--text-primary);
+        }
+
+        .instructions .instructions-citation {
+            margin: 10px 0 0 0;
+            font-size: 0.85em;
+        }
+
+        .instructions li {
+            margin-bottom: 6px;
+        }
+
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 28px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(52, 152, 219, 0.25);
+        }
+
+        .instructions-warning {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.35);
+            border-radius: 4px;
+        }
+
+        .instructions-warning li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Eligibility Question Styling */
+        .eligibility {
+            width: 90%;
+            margin-bottom: 25px;
+        }
+
+        .eligibility-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 18px;
+            background-color: var(--secondary-card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .eligibility-label {
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .toggle-group {
+            display: flex;
+            flex-shrink: 0;
+        }
+
+        .toggle-group .toggle-btn {
+            height: 40px;
+            min-width: 72px;
+            padding: 0 18px;
+            background-color: var(--primary-card-color);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            font-size: 0.95em;
+        }
+
+        .toggle-group .toggle-btn:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+
+        .toggle-group .toggle-btn:last-child {
+            border-radius: 0 6px 6px 0;
+            border-left: none;
+        }
+
+        .toggle-group .toggle-btn:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+            transform: none;
+        }
+
+        .toggle-group .toggle-btn.selected {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .eligibility-message {
+            margin-top: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .eligibility-message strong {
+            color: var(--text-primary);
+        }
+
+        .eligibility-message.ok {
+            background-color: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.35);
+        }
+
+        .eligibility-message.not-applicable {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.35);
+        }
+
+        .controls.is-disabled {
+            opacity: 0.4;
+        }
+
+        @media (max-width: 760px) {
+            .instructions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .eligibility-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
 
         .controls {
@@ -124,6 +286,17 @@
         button:hover {
             background-color: var(--accent-blue-dark);
             transform: translateY(-2px);
+        }
+
+        button:disabled,
+        button:disabled:hover {
+            background-color: var(--accent-blue);
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .input-group input:disabled {
+            cursor: not-allowed;
         }
 
         .chart-container {
@@ -209,25 +382,72 @@
         
         <!-- Instruction Section -->
         <div class="instructions">
-            <strong>How to use:</strong> Enter the exact time that has elapsed since the <strong>acute ingestion</strong>. 
-            The nomogram is only valid for blood samples taken between <strong>4 and 24 hours</strong> post-ingestion. 
-            Use the "Hours" and "Minutes" fields together to specify the time of the lab draw (e.g., for a draw at 4.5 hours, enter 4 in Hours and 30 in Minutes).
+            <p class="instructions-intro">
+                <strong>How to use:</strong> Enter the exact time that has elapsed since the <strong>acute ingestion</strong> (for staggered ingestions, since the <strong>first</strong> ingestion), along with the measured acetaminophen (APAP) level, then click "Plot Level".
+                The nomogram is only valid for blood samples taken between <strong>4 and 24 hours</strong> post-ingestion.
+                Use the "Hours" and "Minutes" fields together to specify the time of the lab draw (e.g., for a draw at 4.5 hours, enter 4 in Hours and 30 in Minutes).
+            </p>
+
+            <div class="instructions-grid">
+                <div>
+                    <h2>Use the nomogram when</h2>
+                    <p>All of the following should generally be true:</p>
+                    <ul>
+                        <li>The patient had a <strong>single, acute ingestion</strong>, usually of an immediate-release product. (Staggered ingestions may also qualify &mdash; see Special situations.)</li>
+                        <li>The <strong>time of ingestion is known</strong> and reliable.</li>
+                        <li>The APAP level was drawn <strong>4&ndash;24 hours</strong> after ingestion.</li>
+                        <li>The patient <strong>does not already show signs of liver injury</strong> from acetaminophen.</li>
+                    </ul>
+
+                    <div class="instructions-warning">
+                        <h2>Do not use the nomogram for</h2>
+                        <ul>
+                            <li><strong>Intravenous (IV) acetaminophen overdose.</strong> The nomogram has not been validated for IV exposures.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h2>Special situations <span class="instructions-source">(<a href="https://doi.org/10.1001/jamanetworkopen.2023.27739" target="_blank" rel="noopener noreferrer">2023 US/Canadian consensus</a>)</span></h2>
+                    <ul>
+                        <li><strong>Staggered ingestions within 24 hours:</strong> Can be used if the ingestion pattern and start time are reliable. Plot the time from the <strong>first</strong> ingestion.</li>
+                        <li><strong>Extended-release APAP:</strong> Can be used. If a level drawn 4&ndash;12 hours after ingestion is below the treatment line (150 line) but above 10 &micro;g/mL, repeat the level in 4&ndash;6 hours.</li>
+                        <li><strong>Opioid or anticholinergic co-ingestion:</strong> Can be used. If the level is below the treatment line but above 10 &micro;g/mL <em>and</em> the patient shows opioid or anticholinergic effects, repeat the level in 4&ndash;6 hours.</li>
+                        <li><strong>Pregnancy:</strong> Not a contraindication. Use the same nomogram and treatment threshold.</li>
+                    </ul>
+                    <p class="instructions-citation">
+                        Source: Dart RC, et al. <a href="https://doi.org/10.1001/jamanetworkopen.2023.27739" target="_blank" rel="noopener noreferrer">Management of Acetaminophen Poisoning in the US and Canada: A Consensus Statement</a>. <em>JAMA Netw Open</em>. 2023;6(8):e2327739.
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <div class="controls">
+        <!-- Eligibility Question -->
+        <div class="eligibility">
+            <div class="eligibility-row">
+                <span class="eligibility-label" id="eligibility-label">Was this a single acute ingestion, or staggered ingestions that all took place within 24 hours?</span>
+                <div class="toggle-group" role="radiogroup" aria-labelledby="eligibility-label">
+                    <button type="button" class="toggle-btn" data-value="no" role="radio" aria-checked="false" onclick="setEligibility('no')">No</button>
+                    <button type="button" class="toggle-btn" data-value="yes" role="radio" aria-checked="false" onclick="setEligibility('yes')">Yes</button>
+                </div>
+            </div>
+            <div id="eligibility-message" class="eligibility-message" hidden></div>
+        </div>
+
+        <div class="controls is-disabled">
             <div class="input-group">
                 <label for="hours">Time Since Ingestion (Hours)</label>
-                <input type="number" id="hours" min="0" max="24" placeholder="e.g., 8">
+                <input type="number" id="hours" min="0" max="24" placeholder="e.g., 8" disabled>
             </div>
             <div class="input-group">
                 <label for="minutes">Minutes</label>
-                <input type="number" id="minutes" min="0" max="59" placeholder="e.g., 30">
+                <input type="number" id="minutes" min="0" max="59" placeholder="e.g., 30" disabled>
             </div>
             <div class="input-group">
                 <label for="level">Acetaminophen Level (µg/mL)</label>
-                <input type="number" id="level" min="1" placeholder="e.g., 160">
+                <input type="number" id="level" min="1" placeholder="e.g., 160" disabled>
             </div>
-            <button onclick="plotNomogram()">Plot Level</button>
+            <button onclick="plotNomogram()" disabled>Plot Level</button>
         </div>
 
         <div class="chart-container">
@@ -244,7 +464,7 @@
             </div>
         </div>
 
-        <div id="results">Enter data above and click "Plot Level" to see the result.</div>
+        <div id="results">Answer the ingestion question above to begin.</div>
 
         <div id="disclosure">
             <strong>Disclaimer:</strong> This application is for educational purposes only and does not replace bedside clinical assessment or medical toxicology evaluation. The Rumack-Matthew nomogram is a tool to be used by qualified medical professionals for risk assessment after a single, acute ingestion of acetaminophen.
@@ -257,6 +477,35 @@
             { value: 300, color: getComputedStyle(document.documentElement).getPropertyValue('--line2-color'), name: '300 µg/mL'}
         ];
         const DECAY_CONSTANT = 0.1732868;
+
+        // null = unanswered, true = nomogram applies, false = nomogram does not apply
+        let ingestionEligible = null;
+
+        function setEligibility(value) {
+            ingestionEligible = value === 'yes';
+
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                const selected = btn.dataset.value === value;
+                btn.classList.toggle('selected', selected);
+                btn.setAttribute('aria-checked', selected);
+            });
+
+            const controls = document.querySelector('.controls');
+            controls.classList.toggle('is-disabled', !ingestionEligible);
+            controls.querySelectorAll('input, button').forEach(el => el.disabled = !ingestionEligible);
+
+            const message = document.getElementById('eligibility-message');
+            message.hidden = false;
+            if (ingestionEligible) {
+                message.className = 'eligibility-message ok';
+                message.innerHTML = '<strong>The nomogram can be used.</strong> Enter the time since ingestion and the acetaminophen level below.';
+            } else {
+                message.className = 'eligibility-message not-applicable';
+                message.innerHTML = '<strong>The Rumack-Matthew nomogram does not apply.</strong> It is only validated for a single acute ingestion or staggered ingestions within 24 hours. Please consult your local Poison Control Center or a medical toxicologist for risk assessment and management.';
+            }
+
+            plotNomogram();
+        }
 
         function getLineLevelAtTime(startLevel, time) {
             if (time < 4) return startLevel;
@@ -374,7 +623,15 @@
                 ctx.stroke();
             });
             ctx.lineWidth = 1;
-            
+
+            if (ingestionEligible !== true) {
+                resultsDiv.style.textAlign = "center";
+                resultsDiv.innerHTML = ingestionEligible === false
+                    ? '<p>The nomogram does not apply to this ingestion. See the message above.</p>'
+                    : '<p>Answer the ingestion question above to begin.</p>';
+                return;
+            }
+
             if (!hasInput) {
                 resultsDiv.style.textAlign = "center";
                 resultsDiv.innerHTML = '<p>Enter data above and click "Plot Level" to see the result.</p>';
@@ -397,8 +654,8 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            const textForAbove150 = 'For acute acetaminophen ingestions, being above the 150 µg/mL line at 4 hours on the Rumack-Matthew Nomogram, if untreated, carries a significant risk of hepatotoxicity. This risk is drastically reduced with timely N-acetylcysteine (NAC) administration. Please consult your local Poison Control Center.';
-            const textForAbove300 = 'Being at or above the 300 µg/mL line signifies a higher risk of hepatotoxicity and acute liver failure, even with NAC administration. Please consult your local Poison Control Center immediately.';
+            const textForAbove150 = '<strong>Start the N-acetylcysteine (NAC) protocol.</strong> A level at or above the 150 line carries a significant risk of hepatotoxicity if untreated. This risk is drastically reduced with timely NAC administration. Please consult your local Poison Control Center.';
+            const textForAbove300 = '<strong>Start the N-acetylcysteine (NAC) protocol and consider "double" NAC dosing.</strong> A level at or above the 300 line signifies a higher risk of hepatotoxicity and acute liver failure, even with standard NAC dosing. Discuss increased NAC dosing with your local Poison Control Center immediately.';
 
             const levelAt150Line = getLineLevelAtTime(150, userTime);
             const levelAt300Line = getLineLevelAtTime(300, userTime);
@@ -409,10 +666,10 @@
             if (userLevel < levelAt150Line) {
                 resultStatusText = "below the 150 line";
             } else if (userLevel >= levelAt150Line && userLevel < levelAt300Line) {
-                resultStatusText = "above the 150 line but below the 300 line";
+                resultStatusText = "at or above the 150 line but below the 300 line";
                 additionalInfo = textForAbove150;
             } else {
-                resultStatusText = "above the 300 line";
+                resultStatusText = "at or above the 300 line";
                 additionalInfo = textForAbove300;
             }
             
@@ -426,6 +683,18 @@
             resultsDiv.style.textAlign = "left"; 
             resultsDiv.innerHTML = finalOutput;
         }
+
+        // Reject any keystroke that would push minutes outside 0-59
+        const minutesInput = document.getElementById('minutes');
+        let lastValidMinutes = '';
+        minutesInput.addEventListener('input', () => {
+            const value = Number(minutesInput.value);
+            if (minutesInput.value !== '' && (value < 0 || value > 59)) {
+                minutesInput.value = lastValidMinutes;
+            } else {
+                lastValidMinutes = minutesInput.value;
+            }
+        });
 
         window.onload = plotNomogram;
     </script>
